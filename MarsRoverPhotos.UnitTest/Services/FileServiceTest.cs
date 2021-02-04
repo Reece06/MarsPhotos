@@ -84,5 +84,56 @@ namespace MarsRoverPhotos.UnitTest.Services
 
             file.Verify();
         }
+
+        [TestMethod]
+        public async Task GetPhotoStream_Available()
+        {
+            var output = await fileService.GetPhotoStream(new DateTime(2015, 06, 03), "FHAZ-10121.JPG");
+
+            Assert.IsNotNull(output);
+        }
+
+        [TestMethod]
+        public async Task GetPhotoStream_NotAvailable()
+        {
+            var output = await fileService.GetPhotoStream(new DateTime(2015, 07, 03), "FHAZ-10121.JPG");
+
+            Assert.IsNull(output);
+        }
+
+        [TestMethod]
+        public void GetAvailableDate_Success()
+        {
+            var output = fileService.AvailableDates();
+
+            Assert.IsTrue(output.Count > 0);
+        }
+
+        [TestMethod]
+        public void GetAvailableDate_NoResult()
+        {
+            fileService = new FileService("C:\\test");
+            var output = fileService.AvailableDates();
+
+            Assert.IsNull(output);
+        }
+
+        [TestMethod]
+        public void GetAvailablePhotos_Success()
+        {
+            var output = fileService.AvailablePhotos("2015-06-03");
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.Photos.Count > 0);
+        }
+
+        [TestMethod]
+        public void GetAvailablePhotos_NoResult()
+        {
+            fileService = new FileService("C:\\test");
+            var output = fileService.AvailablePhotos("2015-06-03");
+
+            Assert.IsNull(output);
+        }
     }
 }

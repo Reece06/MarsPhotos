@@ -1,5 +1,6 @@
 ﻿using MarsRoverPhotos.Domain.Command;
 using MarsRoverPhotos.Domain.Entities;
+using MarsRoverPhotos.Domain.Entities.Dto;
 using MarsRoverPhotos.Domain.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MarsRoverPhotos.Domain.CommandHandler
 {
-    public class ProcessUploadFileHandler : ICommandHandler<ProcessUploadedFile, int>
+    public class ProcessUploadFileHandler : ICommandHandler<ProcessUploadedFile, UploadFileResult>
     {
         private readonly IFileService _fileService;
         private readonly INasaService _nasaService;
@@ -22,7 +23,7 @@ namespace MarsRoverPhotos.Domain.CommandHandler
             _nasaService = nasaService;
         }
 
-        public async Task<int> HandleProcess(ProcessUploadedFile command)
+        public async Task<UploadFileResult> HandleProcess(ProcessUploadedFile command)
         {
             var exceptionsList = new List<Exception>();
             if(command == null)
@@ -42,7 +43,10 @@ namespace MarsRoverPhotos.Domain.CommandHandler
                 throw new Exception("No Dates Found!");
             }
 
-            var result = await ProcessDates(dates, exceptionsList);
+            var result = new UploadFileResult { 
+                ProcessedDates = await ProcessDates(dates, exceptionsList),
+                UnprocessedDates = exceptionsList.Count
+            };
 
             return result;
         }
@@ -72,7 +76,7 @@ namespace MarsRoverPhotos.Domain.CommandHandler
                 {
                     try
                     {
-                        await _fileService.SaveImageToPath(photo);
+                        _ = _fileService.SaveImageToPath(photo);
                     }
                     catch (Exception ex)
                     {

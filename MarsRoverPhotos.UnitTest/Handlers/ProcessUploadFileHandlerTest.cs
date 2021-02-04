@@ -1,6 +1,7 @@
 ﻿using MarsRoverPhotos.Domain.Command;
 using MarsRoverPhotos.Domain.CommandHandler;
 using MarsRoverPhotos.Domain.Entities;
+using MarsRoverPhotos.Domain.Entities.Dto;
 using MarsRoverPhotos.Domain.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +18,7 @@ namespace MarsRoverPhotos.UnitTest.Handlers
     [TestClass]
     public class ProcessUploadFileHandlerTest
     {
-        private ICommandHandler<ProcessUploadedFile, int> _handler;
+        private ICommandHandler<ProcessUploadedFile, UploadFileResult> _handler;
         private Mock<IFileService> fileService;
         private Mock<INasaService> nasaService;
 
@@ -87,7 +88,7 @@ namespace MarsRoverPhotos.UnitTest.Handlers
             fileService.Verify();
             nasaService.Verify();
             file.Verify();
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(0, result.ProcessedDates);
         }
 
         [TestMethod]
@@ -129,7 +130,7 @@ namespace MarsRoverPhotos.UnitTest.Handlers
             fileService.Verify();
             nasaService.Verify();
             file.Verify();
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(1, result.ProcessedDates);
         }
 
 

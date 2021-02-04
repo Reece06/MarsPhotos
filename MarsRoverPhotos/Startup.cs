@@ -1,6 +1,9 @@
 using MarsRoverPhotos.Domain.Command;
 using MarsRoverPhotos.Domain.CommandHandler;
+using MarsRoverPhotos.Domain.Entities.Dto;
 using MarsRoverPhotos.Domain.Interface;
+using MarsRoverPhotos.Domain.Query;
+using MarsRoverPhotos.Domain.QueryHandler;
 using MarsRoverPhotos.Services.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +28,10 @@ namespace MarsRoverPhotos
             services.AddSingleton<INasaService, NasaService>(s => new NasaService(Configuration["NASASettings:Url"], Configuration["NASASettings:Token"]));
             services.AddSingleton<IFileService, FileService>(s => new FileService(Configuration["FolderPath"]));
 
-            services.AddTransient<ICommandHandler<ProcessUploadedFile, int>, ProcessUploadFileHandler>();
+            services.AddTransient<ICommandHandler<ProcessUploadedFile, UploadFileResult>, ProcessUploadFileHandler>();
+
+            services.AddTransient<IQueryHandlerAsync<GetPhoto, PhotoResult>, GetPhotoHandler>();
+            services.AddTransient<IQueryHandler<GetDateListAndFiles, DateListResult>, GetDateListAndFilesHandler>();
             services.AddControllers();
         }
 
