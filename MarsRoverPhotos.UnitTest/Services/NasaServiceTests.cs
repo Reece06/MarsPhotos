@@ -3,6 +3,7 @@ using MarsRoverPhotos.Services.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace MarsRoverPhotos.UnitTest.Services
         [TestInitialize]
         public void Initialize()
         {
-            nasaService = new NasaService("https://api.nasa.gov/mars-photos/api/v1/", "EcS17Zq2NlsWViMSXhgI1Ifx273Z1Ie6fBYAwOX8");
+            var client = new HttpClient { BaseAddress = new Uri("https://api.nasa.gov/mars-photos/api/v1/") };
+            nasaService = new NasaService(client, "EcS17Zq2NlsWViMSXhgI1Ifx273Z1Ie6fBYAwOX8");
         }
 
         [TestMethod]

@@ -7,6 +7,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace MarsRoverPhotos.UnitTest.Services
         [TestInitialize]
         public void Initialize()
         {
-            fileService = new FileService("C:\\images\\rover");
+            fileService = new FileService("C:\\images\\rover", new HttpClient());
         }
 
         [TestMethod]
@@ -112,7 +113,7 @@ namespace MarsRoverPhotos.UnitTest.Services
         [TestMethod]
         public void GetAvailableDate_NoResult()
         {
-            fileService = new FileService("C:\\test");
+            fileService = new FileService("C:\\test", new HttpClient());
             var output = fileService.AvailableDates();
 
             Assert.IsNull(output);
@@ -130,7 +131,7 @@ namespace MarsRoverPhotos.UnitTest.Services
         [TestMethod]
         public void GetAvailablePhotos_NoResult()
         {
-            fileService = new FileService("C:\\test");
+            fileService = new FileService("C:\\test", new HttpClient());
             var output = fileService.AvailablePhotos("2015-06-03");
 
             Assert.IsNull(output);

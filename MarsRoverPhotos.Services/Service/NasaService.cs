@@ -16,9 +16,9 @@ namespace MarsRoverPhotos.Services.Service
         protected readonly string token;
         protected const string roverAPI = "rovers/curiosity/photos";
 
-        public NasaService(string baseUrl, string token)
+        public NasaService(HttpClient client, string token)
         {
-            _client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _client = client;
             this.token = token;
         }
 

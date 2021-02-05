@@ -1,0 +1,26 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Please upload a file.</p>
+</div>
+
+<div class="text-center">
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" asp-for="Upload" />
+        <input type="submit" />
+    </form>
+</div>
+
+@if (Model.Result != null)
+{
+    <div class="text-center mt-2">
+        <label>Processed Dates from File : </label>@Model.Result.ProcessedDates
+        <br />
+        <label>Unprocessed Dates from File : </label>@Model.Result.UnprocessedDates
+    </div>
+}

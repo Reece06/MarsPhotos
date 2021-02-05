@@ -76,7 +76,7 @@ namespace MarsRoverPhotos.Domain.CommandHandler
                 {
                     try
                     {
-                        _ = _fileService.SaveImageToPath(photo);
+                        await _fileService.SaveImageToPath(photo);
                     }
                     catch (Exception ex)
                     {

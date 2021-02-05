@@ -4,12 +4,15 @@ using MarsRoverPhotos.Domain.Entities.Dto;
 using MarsRoverPhotos.Domain.Interface;
 using MarsRoverPhotos.Domain.Query;
 using MarsRoverPhotos.Domain.QueryHandler;
+using MarsRoverPhotos.Service;
 using MarsRoverPhotos.Services.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Net.Http;
 
 namespace MarsRoverPhotos
 {
@@ -25,14 +28,17 @@ namespace MarsRoverPhotos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<INasaService, NasaService>(s => new NasaService(Configuration["NASASettings:Url"], Configuration["NASASettings:Token"]));
-            services.AddSingleton<IFileService, FileService>(s => new FileService(Configuration["FolderPath"]));
+            var client = new HttpClient { BaseAddress = new Uri(Configuration["NASASettings:Url"]) };
+            services.AddSingleton<INasaService, NasaService>(s => new NasaService(client, Configuration["NASASettings:Token"]));
+            services.AddSingleton<IFileService, FileService>(s => new FileService(Configuration["FolderPath"], new HttpClient()));
 
             services.AddTransient<ICommandHandler<ProcessUploadedFile, UploadFileResult>, ProcessUploadFileHandler>();
 
             services.AddTransient<IQueryHandlerAsync<GetPhoto, PhotoResult>, GetPhotoHandler>();
             services.AddTransient<IQueryHandler<GetDateListAndFiles, DateListResult>, GetDateListAndFilesHandler>();
-            services.AddControllers();
+            services.AddSingleton<MarsRoverService>();
+            services.AddRazorPages();
+            //services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,8 +48,15 @@ namespace MarsRoverPhotos
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -51,7 +64,7 @@ namespace MarsRoverPhotos
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapRazorPages();
             });
         }
     }

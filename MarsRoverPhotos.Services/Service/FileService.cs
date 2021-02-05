@@ -16,10 +16,10 @@ namespace MarsRoverPhotos.Services.Service
     {
         protected readonly string path;
         protected HttpClient _httpClient;
-        public FileService(string path)
+        public FileService(string path,HttpClient client)
         {
             this.path = path;
-            _httpClient = new HttpClient();
+            _httpClient = client;
         }
 
         public async Task SaveImageToPath(Photo photo)

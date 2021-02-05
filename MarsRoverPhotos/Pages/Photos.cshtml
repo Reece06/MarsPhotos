@@ -1,0 +1,45 @@
+﻿@page
+@model PhotosModel
+@{
+    ViewData["Title"] = "Mars Rover Photos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="text-left">
+    @if (Model.result != null || Model.result.DateList != null)
+    {
+        @foreach (var date in Model.result.DateList)
+        {
+            <h3>
+
+                @date.DateString
+            </h3>
+
+            <div class="row">
+                @foreach (var photo in date.Photos)
+                {
+
+                    var base64 = Convert.ToBase64String(await Model.GetPhotoByte(@date.DateString, photo));
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+
+                    <div class="col-md-2">
+                        <div class="card">
+                            <img src="@imgSrc" />
+                            <a class="text-center">
+                                @photo
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <br />
+
+
+
+    }
+</div>
+
+
